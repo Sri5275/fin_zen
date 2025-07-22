@@ -8,6 +8,28 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <div id="auth-section">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <h2>Register</h2>
+        <form id="register-form">
+            <input type="email" id="register-email" placeholder="Email" required>
+            <input type="password" id="register-password" placeholder="Password" required>
+            <button type="submit">Register</button>
+        </form>
+        <div id="auth-message"></div>
+    </div>
+    <div id="dashboard-section" style="display:none;">
+        <h2>Dashboard</h2>
+        <button id="logout-btn">Logout</button>
+        <pre id="dashboard-data"></pre>
+    </div>
+
+    
     <header>
         <h1>FinZen</h1>
         <div class="user-profile">

@@ -136,3 +136,48 @@ header h1 {
     height: 100%;
     border-radius: 10px;
 }
+
+.progress-bar-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+}
+/* Budget */
+#budget-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}       
+
+.budget-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.budget-item:last-child { border-bottom: none; }
+.budget-details {  
+    display: flex;
+    flex-direction: column;
+}   
+.budget-category { font-weight: 500; }
+.budget-amount { font-weight: 600; }
+.budget-spent { color: var(--text-secondary); }
+.budget-progress {
+    background-color: #333;
+    border-radius: 10px;
+    height: 10px;
+    overflow: hidden;
+}
+.budget-progress-bar {
+    background-color: var(--accent-color);
+    height: 100%;
+    border-radius: 10px;
+}
+form { margin-bottom: 1em; }
+input { margin: 0.5em 0; display: block; }
+button { margin-top: 0.5em; }
+#auth-message { color: red; margin-bottom: 1em; }
+pre { background: #f4f4f4; padding: 1em; }

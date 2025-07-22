@@ -1,11 +1,18 @@
 import sqlite3
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask import Flask, jsonify, request
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 CORS(app) # Allows the frontend to make requests to this backend
 
+
 DATABASE = 'database/finzen.db'
+app.config["JWT_SECRET_KEY"] = "your-secret-key"  # Change this in production!
+jwt = JWTManager(app)
+
 
 def get_db():
     db = sqlite3.connect(DATABASE)
@@ -70,14 +77,45 @@ def init_db():
         db.commit()
         db.close()
 
+# Registration endpoint
+@app.route('/api/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    db = get_db()
+    if db.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone():
+        db.close()
+        return jsonify({"msg": "Email already registered"}), 400
+    password_hash = generate_password_hash(password)
+    db.execute("INSERT INTO users (email, password_hash) VALUES (?, ?)", (email, password_hash))
+    db.commit()
+    db.close()
+    return jsonify({"msg": "Registration successful"}), 201
 
+# Login endpoint
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    db = get_db()
+    user = db.execute("SELECT id, password_hash FROM users WHERE email = ?", (email,)).fetchone()
+    db.close()
+    if user and check_password_hash(user['password_hash'], password):
+        access_token = create_access_token(identity=user['id'])
+        return jsonify(access_token=access_token), 200
+    return jsonify({"msg": "Invalid credentials"}), 401
+
+# Protected endpoint to get dashboard data
 @app.route('/api/dashboard_data')
+@jwt_required()
 def get_dashboard_data():
     """
     This is the main API endpoint that aggregates all data for the dashboard.
     In a real app, user_id would come from a secure authentication token (JWT).
     """
-    user_id = 1 # Hardcoded for prototype
+    user_id = get_jwt_identity()
     db = get_db()
 
     # Fetch recent transactions

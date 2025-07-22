@@ -1,3 +1,118 @@
+const API_BASE = "http://localhost:5001/api";
+
+const loginForm = document.getElementById('login-form');
+const registerForm = document.getElementById('register-form');
+const authMessage = document.getElementById('auth-message');
+const dashboardSection = document.getElementById('dashboard-section');
+const authSection = document.getElementById('auth-section');
+const dashboardData = document.getElementById('dashboard-data');
+const logoutBtn = document.getElementById('logout-btn');
+
+function showDashboard() {
+    authSection.style.display = 'none';
+    dashboardSection.style.display = 'block';
+}
+
+function showAuth() {
+    authSection.style.display = 'block';
+    dashboardSection.style.display = 'none';
+}
+
+function setToken(token) {
+    localStorage.setItem('jwt', token);
+}
+
+function getToken() {
+    return localStorage.getItem('jwt');
+}
+
+function clearToken() {
+    localStorage.removeItem('jwt');
+}
+
+async function fetchDashboard() {
+    const token = getToken();
+    if (!token) return;
+    dashboardData.textContent = "Loading...";
+    try {
+        const res = await fetch(`${API_BASE}/dashboard_data`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            dashboardData.textContent = JSON.stringify(data, null, 2);
+        } else {
+            dashboardData.textContent = "Failed to load dashboard.";
+            showAuth();
+        }
+    } catch (e) {
+        dashboardData.textContent = "Error loading dashboard.";
+        showAuth();
+    }
+}
+
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    authMessage.textContent = "Logging in...";
+    try {
+        const res = await fetch(`${API_BASE}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.access_token) {
+            setToken(data.access_token);
+            showDashboard();
+            fetchDashboard();
+        } else {
+            authMessage.textContent = data.msg || "Login failed.";
+        }
+    } catch {
+        authMessage.textContent = "Network error.";
+    }
+});
+
+registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    authMessage.textContent = "Registering...";
+    try {
+        const res = await fetch(`${API_BASE}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            authMessage.textContent = "Registration successful. Please login.";
+        } else {
+            authMessage.textContent = data.msg || "Registration failed.";
+        }
+    } catch {
+        authMessage.textContent = "Network error.";
+    }
+});
+
+logoutBtn.addEventListener('click', () => {
+    clearToken();
+    showAuth();
+});
+
+window.onload = () => {
+    if (getToken()) {
+        showDashboard();
+        fetchDashboard();
+    } else {
+        showAuth();
+    }
+};
+
+//Main dashboard rendering logic
+// This will be called after the DOM is loaded to fetch and display dashboard data
 document.addEventListener('DOMContentLoaded', () => {
     fetchDashboardData();
 });
