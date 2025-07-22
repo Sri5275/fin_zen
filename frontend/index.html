@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinZen - Your Complete Financial Picture</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>FinZen</h1>
+        <div class="user-profile">
+            <span>Welcome, User!</span>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <!-- Summary Cards -->
+        <section class="summary-grid">
+            <div class="card" id="portfolio-overview">
+                <h3>Portfolio Overview</h3>
+                <p class="large-value" id="portfolio-value">₹0.00</p>
+                <div class="sub-values">
+                    <span id="portfolio-pnl" class="positive">+₹0.00 (+0.00%)</span>
+                    <span id="portfolio-day-gain" class="positive">Today: +₹0.00</span>
+                </div>
+            </div>
+            <div class="card" id="financial-health">
+                <h3>Financial Health Score</h3>
+                <p class="large-value" id="health-score">0</p>
+                 <div class="sub-values">
+                    <span id="health-assessment">Loading...</span>
+                </div>
+            </div>
+            <div class="card" id="monthly-spending">
+                <h3>This Month's Spending</h3>
+                <p class="large-value" id="total-spent">₹0.00</p>
+                <div class="sub-values">
+                    <span>Across all categories</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <section class="main-grid">
+            <div class="card large-card" id="budgets">
+                <h3>Budget vs. Actuals</h3>
+                <canvas id="budgetChart"></canvas>
+            </div>
+            <div class="card large-card" id="recent-transactions">
+                <h3>Recent Transactions</h3>
+                <ul id="transaction-list">
+                    <!-- JS will populate this -->
+                </ul>
+            </div>
+            <div class="card" id="financial-goals">
+                <h3>Financial Goals</h3>
+                <div id="goal-list">
+                    <!-- JS will populate this -->
+                </div>
+            </div>
+             <div class="card" id="portfolio-allocation">
+                <h3>Portfolio Allocation</h3>
+                <canvas id="allocationChart"></canvas>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
